@@ -1,8 +1,11 @@
 package de.ustutt.iaas.cc.core;
 
-import java.util.List;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
-import javax.ws.rs.client.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A text processor that sends the text to one of a set of remote REST API for
@@ -13,19 +16,24 @@ import javax.ws.rs.client.Client;
  */
 public class RemoteTextProcessorMulti implements ITextProcessor {
 
-	public RemoteTextProcessorMulti(List<String> textProcessorResources, Client client) {
+	private final static Logger logger = LoggerFactory.getLogger(RemoteTextProcessorMulti.class);
+
+	private final TextProcessorScheduler scheduler;
+
+	public RemoteTextProcessorMulti(TextProcessorScheduler scheduler) {
 		super();
-		// TODO ...
+		this.scheduler = scheduler;
 	}
 
 	@Override
 	public String process(String text) {
-		// text processing placeholder, to be replaced by your solution :-)
-		String processedText = "[processed by incomplete RemoteTextProcessorMulti] - " + text;
+		String processedText = "[processed by RemoteTextProcessorMulti] - " + text;
 
-		// TODO send request to "next" text processor endpoint (following some load balancing strategy)
+		WebTarget target = scheduler.schedule();
+		logger.info("Use `TextProcessor` instance with URI '" + target.getUri() + "'");
+		String processed = target.request(MediaType.TEXT_PLAIN).post(Entity.entity(processedText, MediaType.TEXT_PLAIN),
+				String.class);
 
-		return processedText;
+		return processed;
 	}
-
 }

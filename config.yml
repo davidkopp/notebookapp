@@ -102,11 +102,14 @@ serviceInstanceID: My first Notebook App
 textProcessor:
   # local, remoteSingle, remoteMulti, queue 
   mode: local
+  # random, roundRobin
+  strategy: roundRobin
   # text processor service endpoints
   # - in mode "remoteSingle" only the first endpoint will be used
   # - in mode "remoteMulti" all endpoints will be used
   textProcessors:
     - http://localhost:8090/api
+    - http://localhost:8091/api
     - http://localhost:8092/api
   # SQS, ActiveMQ
   # messsaging system, required for mode "queue"

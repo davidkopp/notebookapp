@@ -21,9 +21,12 @@ import de.ustutt.iaas.cc.core.INotesDB;
 import de.ustutt.iaas.cc.core.ITextProcessor;
 import de.ustutt.iaas.cc.core.LocalTextProcessor;
 import de.ustutt.iaas.cc.core.QueueTextProcessor;
+import de.ustutt.iaas.cc.core.RandomTextProcessorScheduler;
 import de.ustutt.iaas.cc.core.RemoteTextProcessor;
 import de.ustutt.iaas.cc.core.RemoteTextProcessorMulti;
+import de.ustutt.iaas.cc.core.RoundRobinTextProcessorScheduler;
 import de.ustutt.iaas.cc.core.SimpleNotebookDAO;
+import de.ustutt.iaas.cc.core.TextProcessorScheduler;
 import de.ustutt.iaas.cc.resources.NotebookResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -141,7 +144,24 @@ public class NotebookappApplication extends Application<NotebookappConfiguration
 			JerseyClientConfiguration jcfm = configuration.getJerseyClientConfiguration();
 			jcfm.setGzipEnabled(false);
 			final Client clientm = new JerseyClientBuilder(environment).using(jcfm).build(getName());
-			tp = new RemoteTextProcessorMulti(eps, clientm);
+			String strategy = configuration.textProcessorConfiguration.strategy;
+			TextProcessorScheduler scheduler;
+			switch (strategy.toUpperCase()) {
+			case "RANDOM":
+				scheduler = new RandomTextProcessorScheduler(eps, clientm);
+				logger.info("Using load balancer scheduler: {}", scheduler.getName());
+				break;
+			case "ROUNDROBIN":
+				scheduler = new RoundRobinTextProcessorScheduler(eps, clientm);
+				logger.info("Using load balancer scheduler: {}", scheduler.getName());
+				break;
+			default:
+				logger.warn("Unknown or empty load balancing strategy, default strategy 'random' will be used",
+						configuration.textProcessorConfiguration.strategy);
+				scheduler = new RandomTextProcessorScheduler(eps, clientm);
+				break;
+			}
+			tp = new RemoteTextProcessorMulti(scheduler);
 			break;
 		case queue:
 			logger.info("Using queue text processor reading from {} and writing to {}",

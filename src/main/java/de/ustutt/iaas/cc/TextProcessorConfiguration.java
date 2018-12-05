@@ -22,6 +22,8 @@ public class TextProcessorConfiguration {
 	@Size(min = 1)
 	public List<String> textProcessors;
 
+	public String strategy;
+
 	public MOM mom;
 
 	public String activeMQurl;

@@ -49,9 +49,13 @@ serviceInstanceID: My first Notebook App
 
 textProcessor:
   # local, remoteSingle, remoteMulti, queue 
-  mode: local
+  mode: remoteMulti
+  # random, roundRobin
+  strategy: roundRobin
   textProcessors:
-  - tbd
+  - http://localhost:8090/api
+  - http://localhost:8091/api
+  - http://localhost:8092/api
 
 notesDB:
   # tmp, jdbc, gcds
