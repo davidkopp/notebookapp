@@ -10,7 +10,7 @@ Technically, the web UI is based on [Angular](https://angular.io/) interacting w
 1. You need to have Java 8, Git, and Maven installed on your system
 2. Checkout the source code from GitHub 
 3. Run `mvn clean install` to build your application
-4. Start application with `java -jar target/notebookapp-0.2.0.jar server config-min.yml`
+4. Start application with `java -jar target/notebookapp-0.3.0.jar server config-min.yml`
 (on some platforms, `sudo` is required, i.e. you have to run `sudo java -jar ...` instead)
 5. To check that your application is running enter url `http://localhost`
 
@@ -170,17 +170,17 @@ When the notebook application is run in JDBC mode, the database first has to be 
 
 Create or update the database in dry-run mode, i.e. the database is not changed but the SQL commands to be executed are shown on the command line:  
 ```
-java -jar notebookapp-0.2.0.jar db migrate --dry-run config.yml  
+java -jar notebookapp-0.3.0.jar db migrate --dry-run config.yml  
 ```
 
 Create or update the database (has to be executed once before running the notebook application for the first time):  
 ```
-java -jar notebookapp-0.2.0.jar db migrate config.yml  
+java -jar notebookapp-0.3.0.jar db migrate config.yml  
 ```
 
 Check database status:  
 ```
-java -jar notebookapp-0.2.0.jar db status config.yml  
+java -jar notebookapp-0.3.0.jar db status config.yml  
 ```
 Implemented by `de.ustutt.iaas.cc.core.DatabaseNotebookDAO`.
 
@@ -191,9 +191,9 @@ The following commands have been tested with Ubuntu Server 16.04 LTS on AWS EC2.
 ```
 sudo apt-get update  
 sudo apt-get install --yes openjdk-8-jre-headless  
-wget https://github.com/F7502/notebookapp/releases/download/v0.2.0/notebookapp-0.2.0.jar  
-wget https://github.com/F7502/notebookapp/releases/download/v0.2.0/config.yml  
-wget https://github.com/F7502/notebookapp/releases/download/v0.2.0/notebookapp  
+wget https://github.com/F7502/notebookapp/releases/download/v0.3.0/notebookapp-0.3.0.jar  
+wget https://github.com/F7502/notebookapp/releases/download/v0.3.0/config.yml  
+wget https://github.com/F7502/notebookapp/releases/download/v0.3.0/notebookapp  
 sudo mv notebookapp /etc/init.d/  
 sudo chmod +x /etc/init.d/notebookapp  
 sudo update-rc.d notebookapp defaults  
@@ -202,7 +202,7 @@ sudo update-rc.d notebookapp defaults
 At this point, you will have to adapt the `config.yml` file to your specific setup (or you already download an adapted configuration file before, instead of using the default one). When using SQS, you have to add the `aws.properties` file containing your AWS credentials. When using a database, you also have to add the `db.properties` file containing your database access data. When using a fresh/empty database, you first have to initialize it by running the following command: 
 
 ```
-java -jar notebookapp-0.2.0.jar db migrate config.yml  
+java -jar notebookapp-0.3.0.jar db migrate config.yml  
 ```
 
 After adapting the configuration (and initializing the database if necessary), the application can be started:  
