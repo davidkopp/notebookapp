@@ -7,3 +7,5 @@
 /aws.properties
 notebookapp.iml
 .idea
+dependency-reduced-pom.xml
+.factorypath
