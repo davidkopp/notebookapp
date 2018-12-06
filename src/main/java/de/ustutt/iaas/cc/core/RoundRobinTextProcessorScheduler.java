@@ -1,6 +1,8 @@
 package de.ustutt.iaas.cc.core;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
@@ -12,12 +14,10 @@ import javax.ws.rs.client.WebTarget;
  */
 public class RoundRobinTextProcessorScheduler extends TextProcessorScheduler {
 
-    private int currentIndex;
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     public RoundRobinTextProcessorScheduler(List<String> textProcessorResources, Client client) {
         super(textProcessorResources, client);
-
-        currentIndex = -1;
     }
 
     @Override
@@ -27,24 +27,9 @@ public class RoundRobinTextProcessorScheduler extends TextProcessorScheduler {
 
     @Override
     protected WebTarget schedule() {
-        WebTarget target = null;
+        int index = counter.incrementAndGet() % targets.size();
 
-        int nextIndex;
-        if (currentIndex < 0) {
-            // Initializing
-            nextIndex = 0;
-        } else {
-            // Next target
-            nextIndex = currentIndex + 1;
-            if (nextIndex > targets.size() - 1) {
-                // Begin again with first target
-                nextIndex = 0;
-            }
-        }
-
-        target = targets.get(nextIndex);
-        currentIndex = nextIndex;
-        return target;
+        return targets.get(index);
     }
 
 }
